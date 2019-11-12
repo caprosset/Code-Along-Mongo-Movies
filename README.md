@@ -110,7 +110,7 @@ db.movies.find().pretty()
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find()
 ```
 
   
@@ -124,7 +124,7 @@ db.movies.find().pretty()
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find().pretty()
 ```
 
   
@@ -138,7 +138,7 @@ db.movies.find().pretty()
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { year: 2000 } )
 ```
 
   
@@ -152,7 +152,7 @@ db.movies.find().pretty()
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { rate: "8.8" } )
 ```
 
  
@@ -168,7 +168,8 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { _id: ObjectId('5cbf03ca570ffc7ef7ac4861') } )
+// need to change the id number (because each dbb, even when imported, generates new ids when creating the documents)
 ```
 
   
@@ -182,7 +183,7 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { $and: [ { year: 2000 },  { rate: '8.5' } ] } )
 ```
 
   
@@ -196,7 +197,7 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { $or: [ { year: 2000 },  { year: 2005 } ] } )
 ```
 
   
@@ -210,7 +211,9 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { $nor: [ { rate: "9.0" } ] } ).limit(10)
+// or
+db.movies.find( { rate: { $ne: "9.0" } } ).limit(10)
 ```
 
  
@@ -226,7 +229,9 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { $nor: [ { director: "Steven Spielberg" }, { director: "Quentin Tarantino" } ] }, { title: 1, director: 1, _id: 0 } )
+// or
+db.movies.find( { $or: [ { director: {$ne: "Steven Spielberg"}},  { director: {$ne:  "Quentin Tarantino"}}] }, { title: 1, director: 1, _id:0 } ) 
 ```
 
   
@@ -240,7 +245,7 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( {}, { title: 1, year: 1, genre: 1, _id:0 } )
 ```
 
   
@@ -249,12 +254,12 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 
 
 
-### 11. Retrieve all documents from the `movies` collection including only `title` field , using and sort them by `name` 
+### 11. Retrieve all documents from the `movies` collection including only `title` field , using and sort them by `title`
 
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( {}, { title: 1, _id:0 } ).sort({title: 1})
 ```
 
   
@@ -263,12 +268,12 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 
 
 
-### 12. Retrieve all documents from the `movies` collection including only `title`  and `director` fields ,  sort them by `name` , skipping first 5 documents
+### 12. Retrieve all documents from the `movies` collection including only `title`  and `director` fields ,  sort them by ` title ` , skipping first 5 documents
 
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( {}, { title: 1, director: 1, _id:0 } ).sort({title: 1}).skip(5)
 ```
 
   
@@ -282,7 +287,7 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { director: {$eq: "Robert Zemeckis"} }, { title: 1, director: 1 } )
 ```
 
   
@@ -296,7 +301,9 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { rate: {$ne: "8.5"} }, { title: 1, rate: 1, _id: 0 } )
+// or
+db.movies.find({ $nor: [ { rate: "8.5"} ] }, { title: 1, rate: 1, _id: 0 })
 ```
 
   
@@ -310,7 +317,7 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { year: { $gte: 2015 } }, { title: 1, year: 1, director: 1, _id: 0 } )
 ```
 
   
@@ -324,7 +331,7 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( { year: { $lt: 2000 } }, { title: 1, year: 1, director: 1, _id: 0 } )
 ```
 
   
@@ -337,8 +344,8 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 
 **<u>Your query</u>**:
 
-```js
-
+``` 
+db.movies.find( { year: { $in: [ 2000, 2005, 2010 ] } }, { title: 1, year: 1} ).sort( {year: 1} )
 ```
 
   
@@ -350,7 +357,11 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 ### 18. Retrieve all documents from the `movies` collection created in the years 1999 and 2010 and excluding the movie with `title` "Inception"
 
 ```js
-
+db.movies.find( {  
+ $and: [ { year: { $in: [1999, 2010] } }, 
+        { title: { $ne: "Inception" } } ]
+},
+{ title: 1, year: 1} )
 ```
 
  
@@ -364,7 +375,7 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.deleteMany( { year: 1999 } )
 ```
 
 
@@ -373,12 +384,12 @@ To specify an **`ObjectId`** type, use the format **`ObjectId(’id’)`**,
 
 
 
-### 20. Delete document from the `movies` collection with the `_id`  "5cbf03ca570ffc7ef7ac4869".
+### 20. Delete document from the `movies` collection with the `_id`  "5dca9d94600ed4679e071512".
 
  **<u>Your query</u>**:
 
 ```js
-
+db.movies.deleteOne( { _id: ObjectId("5dca9d94600ed4679e071512") } )
 ```
 
  
@@ -403,7 +414,8 @@ var ratingObj = {
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.updateMany( { year: 2017 }, { $set: { rating: ratingObj } } )
+// to check it's been added, type => db.movies.find( { year: 2017 } )
 ```
 
  
@@ -421,7 +433,8 @@ var ratingObj = {
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.updateOne( { title: "Dunkirk" }, { $set: { "rating.rating":  "PG-13", "rating.violence": true, "rating.strong_language": true } } )
+// check: db.movies.find( { title: "Dunkirk" } )
 ```
 
  
@@ -445,7 +458,18 @@ let moviesToDelete = ["12 Angry Men", "Se7en", "Cidade de Deus", "Braveheart"]
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.deleteMany({ 
+  $or: [
+    { title: "12 Angry Men"},
+    { title: "Se7en"},
+    { title: "Cidade de Deus"},
+    { title: "Braveheart"},
+  ]
+})
+// or
+db.movies.deleteMany({ 
+ title: { $in: moviesToDelete }
+})
 ```
 
 
